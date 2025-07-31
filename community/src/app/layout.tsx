@@ -20,7 +20,7 @@ export default function RootLayout({
     <ClerkProvider>
         <html lang="en" className={GeistSans.className} suppressHydrationWarning>
         <body
-            className="bg-background text-foreground antialiased"
+            className="bg-gradient-to-b from-white to-orange-50 text-foreground antialiased"
         >
             <div className="w-full px-4 md:px-4 lg:px-4 xl:px-4 2xl:px-4">
                 <Navbar />
