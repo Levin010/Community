@@ -12,8 +12,10 @@
     "@clerk/nextjs": "^6.27.1",
     "@geist-ui/react": "^2.2.5",
     "@next/font": "^14.2.15",
+    "@prisma/client": "^6.13.0",
     "geist": "^1.4.2",
     "next": "15.4.4",
+    "prisma": "^6.13.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

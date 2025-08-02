@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
 import { useState } from "react";
-import AddPostButton from "./AddPostButton";
+import AddPostButton from "@/components/AddPostButton";
 import { addPost } from "@/lib/actions";
 
 const AddPost = () => {

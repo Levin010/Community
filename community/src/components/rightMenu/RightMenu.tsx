@@ -1,9 +1,7 @@
 import { User } from "@prisma/client";
-import Ad from "../Ad";
-import Birthdays from "./Birthdays";
-import FriendRequests from "./FriendRequests";
-import UserInfoCard from "./UserInfoCard";
-import UserMediaCard from "./UserMediaCard";
+import Ad from "@/components/Ad";
+import UserInfoCard from "@/components/rightMenu/UserInfoCard";
+import UserMediaCard from "@/components/rightMenu/UserMediaCard";
 import { Suspense } from "react";
 
 const RightMenu = ({ user }: { user?: User }) => {
