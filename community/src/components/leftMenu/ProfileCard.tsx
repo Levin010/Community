@@ -12,6 +12,7 @@ const ProfileCard = async () => {
     where: {
       id: userId,
     },
+    // fetching with prisma
     include: {
       _count: {
         select: {

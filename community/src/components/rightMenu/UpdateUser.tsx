@@ -44,31 +44,37 @@ const UpdateUser = ({ user }: { user: User }) => {
             </div>
             {/* COVER PIC UPLOAD */}
             <CldUploadWidget
-              uploadPreset="social"
-              onSuccess={(result) => setCover(result.info)}
-            >
-              {({ open }) => {
-                return (
-                  <div
-                    className="flex flex-col gap-4 my-4"
-                    onClick={() => open()}
-                  >
-                    <label htmlFor="">Cover Picture</label>
-                    <div className="flex items-center gap-2 cursor-pointer">
-                      <Image
-                        src={user.cover || "/noCover.png"}
-                        alt=""
-                        width={48}
-                        height={32}
-                        className="w-12 h-8 rounded-md object-cover"
-                      />
-                      <span className="text-xs underline text-gray-600">
-                        Change
-                      </span>
+                signatureEndpoint="/api/signed-cloudinary"
+                onSuccess={(result) => setCover(result.info)}
+                options={{
+                    sources: ['local', 'url'],
+                    folder: "uploads",
+                    multiple: false,
+                    resourceType: "image",
+                }}
+                >
+                {({ open }) => {
+                    return (
+                    <div
+                        className="flex flex-col gap-4 my-4"
+                        onClick={() => open()}
+                    >
+                        <label htmlFor="">Cover Picture</label>
+                        <div className="flex items-center gap-2 cursor-pointer">
+                        <Image
+                            src={user.cover || "/noCover.png"}
+                            alt=""
+                            width={48}
+                            height={32}
+                            className="w-12 h-8 rounded-md object-cover"
+                        />
+                        <span className="text-xs underline text-gray-600">
+                            Change
+                        </span>
+                        </div>
                     </div>
-                  </div>
-                );
-              }}
+                    );
+                }}
             </CldUploadWidget>
 
             {/* WRAPPER */}
