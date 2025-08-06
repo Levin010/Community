@@ -37,6 +37,9 @@ const AddPost = () => {
             name="desc"
             onChange={(e) => setDesc(e.target.value)}
           ></textarea>
+          <div className="">
+            <AddPostButton />
+          </div>
         </form>
         {/* POST OPTIONS */}
         <div className="flex items-center gap-4 mt-4 text-gray-400 flex-wrap">

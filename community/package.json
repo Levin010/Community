@@ -13,6 +13,7 @@
     "@geist-ui/react": "^2.2.5",
     "@next/font": "^14.2.15",
     "@prisma/client": "^6.13.0",
+    "babel-plugin-react-compiler": "^19.1.0-rc.2",
     "cloudinary": "^2.7.0",
     "geist": "^1.4.2",
     "next": "15.4.4",
