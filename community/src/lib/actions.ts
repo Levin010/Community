@@ -6,7 +6,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 export const switchFollow = async (userId: string) => {
-  const { userId: currentUserId } = auth();
+  const { userId: currentUserId } = await auth();
 
   if (!currentUserId) {
     throw new Error("User is not authenticated!");
@@ -56,7 +56,7 @@ export const switchFollow = async (userId: string) => {
 };
 
 export const switchBlock = async (userId: string) => {
-  const { userId: currentUserId } = auth();
+  const { userId: currentUserId } = await auth();
 
   if (!currentUserId) {
     throw new Error("User is not Authenticated!!");
@@ -91,7 +91,7 @@ export const switchBlock = async (userId: string) => {
 };
 
 export const acceptFollowRequest = async (userId: string) => {
-  const { userId: currentUserId } = auth();
+  const { userId: currentUserId } = await auth();
 
   if (!currentUserId) {
     throw new Error("User is not Authenticated!!");
@@ -126,7 +126,7 @@ export const acceptFollowRequest = async (userId: string) => {
 };
 
 export const declineFollowRequest = async (userId: string) => {
-  const { userId: currentUserId } = auth();
+  const { userId: currentUserId } = await auth();
 
   if (!currentUserId) {
     throw new Error("User is not Authenticated!!");
@@ -182,7 +182,7 @@ export const updateProfile = async (
     return { success: false, error: true };
   }
 
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     return { success: false, error: true };
@@ -203,7 +203,7 @@ export const updateProfile = async (
 };
 
 export const switchLike = async (postId: number) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) throw new Error("User is not authenticated!");
 
@@ -236,7 +236,7 @@ export const switchLike = async (postId: number) => {
 };
 
 export const addComment = async (postId: number, desc: string) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) throw new Error("User is not authenticated!");
 
