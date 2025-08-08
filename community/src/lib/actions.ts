@@ -1,7 +1,9 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import prisma from "./client";
+import { db } from "@/db";
+import { posts, likes, comments, users } from "@/db/schema";
+import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
@@ -90,69 +92,6 @@ export const switchBlock = async (userId: string) => {
   }
 };
 
-export const acceptFollowRequest = async (userId: string) => {
-  const { userId: currentUserId } = await auth();
-
-  if (!currentUserId) {
-    throw new Error("User is not Authenticated!!");
-  }
-
-  try {
-    const existingFollowRequest = await prisma.followRequest.findFirst({
-      where: {
-        senderId: userId,
-        receiverId: currentUserId,
-      },
-    });
-
-    if (existingFollowRequest) {
-      await prisma.followRequest.delete({
-        where: {
-          id: existingFollowRequest.id,
-        },
-      });
-
-      await prisma.follower.create({
-        data: {
-          followerId: userId,
-          followingId: currentUserId,
-        },
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    throw new Error("Something went wrong!");
-  }
-};
-
-export const declineFollowRequest = async (userId: string) => {
-  const { userId: currentUserId } = await auth();
-
-  if (!currentUserId) {
-    throw new Error("User is not Authenticated!!");
-  }
-
-  try {
-    const existingFollowRequest = await prisma.followRequest.findFirst({
-      where: {
-        senderId: userId,
-        receiverId: currentUserId,
-      },
-    });
-
-    if (existingFollowRequest) {
-      await prisma.followRequest.delete({
-        where: {
-          id: existingFollowRequest.id,
-        },
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    throw new Error("Something went wrong!");
-  }
-};
-
 export const updateProfile = async (
   prevState: { success: boolean; error: boolean },
   payload: { formData: FormData; cover: string }
@@ -208,26 +147,23 @@ export const switchLike = async (postId: number) => {
   if (!userId) throw new Error("User is not authenticated!");
 
   try {
-    const existingLike = await prisma.like.findFirst({
-      where: {
-        postId,
-        userId,
-      },
-    });
+    const existingLike = await db
+      .select()
+      .from(likes)
+      .where(and(eq(likes.postId, postId), eq(likes.userId, userId)))
+      .limit(1);
 
-    if (existingLike) {
-      await prisma.like.delete({
-        where: {
-          id: existingLike.id,
-        },
-      });
+    if (existingLike.length > 0) {
+      await db
+        .delete(likes)
+        .where(eq(likes.id, existingLike[0].id));
     } else {
-      await prisma.like.create({
-        data: {
+      await db
+        .insert(likes)
+        .values({
           postId,
           userId,
-        },
-      });
+        });
     }
   } catch (err) {
     console.log(err);
@@ -241,18 +177,28 @@ export const addComment = async (postId: number, desc: string) => {
   if (!userId) throw new Error("User is not authenticated!");
 
   try {
-    const createdComment = await prisma.comment.create({
-      data: {
+    // Insert the comment
+    const [createdComment] = await db
+      .insert(comments)
+      .values({
         desc,
         userId,
         postId,
-      },
-      include: {
-        user: true,
-      },
-    });
+      })
+      .returning();
 
-    return createdComment;
+    const user = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    const commentWithUser = {
+      ...createdComment,
+      user: user[0],
+    };
+
+    return commentWithUser;
   } catch (err) {
     console.log(err);
     throw new Error("Something went wrong!");
@@ -277,12 +223,10 @@ export const addPost = async (formData: FormData, img: string) => {
       return { error: "Invalid description" };
     }
 
-    await prisma.post.create({
-      data: {
-        desc: validatedDesc.data,
-        userId,
-        img,
-      },
+    await db.insert(posts).values({
+      desc: validatedDesc.data,
+      userId,
+      img,
     });
 
     revalidatePath("/");
