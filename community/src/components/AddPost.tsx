@@ -13,6 +13,7 @@ const AddPost = () => {
   const { user, isLoaded } = useUser();
   const [desc, setDesc] = useState("");
   const [img, setImg] = useState<any>();
+  const [video, setVideo] = useState<any>();
 
   if (!isLoaded) {
     return "Loading...";
@@ -63,10 +64,28 @@ const AddPost = () => {
               );
             }}
           </CldUploadWidget>
-          <div className="flex items-center gap-2 cursor-pointer">
-            <Video className="text-red-500"/>
-            Video
-          </div>
+          <CldUploadWidget
+                signatureEndpoint="/api/signed-cloudinary"
+                options={{
+                resourceType: "video"
+                }}
+                onSuccess={(result, { widget }) => {
+                    setVideo(result.info);
+                    widget.close();
+                }}
+          >
+                {({ open }) => {
+                return (
+                    <div
+                    className="flex items-center gap-2 cursor-pointer"
+                    onClick={() => open()}
+                    >
+                    <Video className="text-red-500"/>
+                    Video
+                    </div>
+                );
+                }}
+          </CldUploadWidget>
         </div>
       </div>
     </div>
