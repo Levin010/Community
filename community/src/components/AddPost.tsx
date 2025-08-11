@@ -7,6 +7,7 @@ import Image from "next/image";
 import { useState } from "react";
 import AddPostButton from "@/components/AddPostButton";
 import { addPost } from "@/lib/actions";
+import { ImageIcon, Video } from "lucide-react";
 
 const AddPost = () => {
   const { user, isLoaded } = useUser();
@@ -44,11 +45,11 @@ const AddPost = () => {
         {/* POST OPTIONS */}
         <div className="flex items-center gap-4 mt-4 text-gray-400 flex-wrap">
           <CldUploadWidget
-            uploadPreset="social"
-            onSuccess={(result, { widget }) => {
+          signatureEndpoint="/api/signed-cloudinary"
+          onSuccess={(result, { widget }) => {
               setImg(result.info);
               widget.close();
-            }}
+          }}
           >
             {({ open }) => {
               return (
@@ -56,14 +57,14 @@ const AddPost = () => {
                   className="flex items-center gap-2 cursor-pointer"
                   onClick={() => open()}
                 >
-                  <Image src="/addimage.png" alt="" width={20} height={20} />
+                  <ImageIcon className="text-green-500"/>
                   Photo
                 </div>
               );
             }}
           </CldUploadWidget>
           <div className="flex items-center gap-2 cursor-pointer">
-            <Image src="/addVideo.png" alt="" width={20} height={20} />
+            <Video className="text-red-500"/>
             Video
           </div>
         </div>

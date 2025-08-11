@@ -32,7 +32,7 @@ const Ad = ({ size }: { size: "sm" | "md" | "lg" }) => {
             height={24}
             className="rounded-full w-6 h-6 object-cover"
           />
-          <span className="text-blue-500 font-medium">BigChef Lounge</span>
+          <span className="text-violet-900 font-medium">BigChef Lounge</span>
         </div>
         <p className={size === "sm" ? "text-xs" : "text-sm"}>
           {size === "sm"

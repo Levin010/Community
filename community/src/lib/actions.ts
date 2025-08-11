@@ -177,7 +177,6 @@ export const addComment = async (postId: number, desc: string) => {
   if (!userId) throw new Error("User is not authenticated!");
 
   try {
-    // Insert the comment
     const [createdComment] = await db
       .insert(comments)
       .values({
@@ -238,18 +237,18 @@ export const addPost = async (formData: FormData, img: string) => {
 };
 
 export const deletePost = async (postId: number) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) throw new Error("User is not authenticated!");
 
   try {
-    await prisma.post.delete({
-      where: {
-        id: postId,
-        userId,
-      },
-    });
-    revalidatePath("/")
+    await db.delete(posts).where(
+      and(
+        eq(posts.id, postId),
+        eq(posts.userId, userId)
+      )
+    );
+    revalidatePath("/");
   } catch (err) {
     console.log(err);
   }

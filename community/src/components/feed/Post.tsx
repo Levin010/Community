@@ -12,8 +12,8 @@ type FeedPostType = PostType & { user: User } & {
   _count: { comments: number };
 };
 
-const Post = ({ post }: { post: FeedPostType }) => {
-  const { userId } = auth();
+const Post = async ({ post }: { post: FeedPostType }) => {
+  const { userId } = await auth();
   return (
     <div className="flex flex-col gap-4">
       {/* USER */}
@@ -36,6 +36,7 @@ const Post = ({ post }: { post: FeedPostType }) => {
       </div>
       {/* DESC */}
       <div className="flex flex-col gap-4">
+        <p>{post.desc}</p>
         {post.img && (
           <div className="w-full min-h-96 relative">
             <Image
@@ -46,7 +47,6 @@ const Post = ({ post }: { post: FeedPostType }) => {
             />
           </div>
         )}
-        <p>{post.desc}</p>
       </div>
       {/* INTERACTION */}
       <Suspense fallback="Loading...">
@@ -59,6 +59,7 @@ const Post = ({ post }: { post: FeedPostType }) => {
       <Suspense fallback="Loading...">
         <Comments postId={post.id} />
       </Suspense>
+      <div className="h-px bg-gray-300 mt-3 w-full"></div>
     </div>
   );
 };

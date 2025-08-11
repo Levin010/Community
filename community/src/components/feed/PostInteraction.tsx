@@ -2,6 +2,7 @@
 
 import { switchLike } from "@/lib/actions";
 import { useAuth } from "@clerk/nextjs";
+import { Heart, MessageCircleMore, Send } from "lucide-react";
 import Image from "next/image";
 import { useOptimistic, useState } from "react";
 
@@ -46,13 +47,11 @@ const PostInteraction = ({
         <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-xl">
           <form action={likeAction}>
             <button>
-              <Image
-                src={optimisticLike.isLiked ? "/liked.png" : "/like.png"}
-                width={16}
-                height={16}
-                alt=""
-                className="cursor-pointer"
-              />
+            {optimisticLike.isLiked ? (
+            <Heart size={18} className="w-4 h-4 fill-red-500 text-red-500 cursor-pointer" />
+            ) : (
+            <Heart size={18} className="w-4 h-4 cursor-pointer" />
+            )}
             </button>
           </form>
           <span className="text-gray-300">|</span>
@@ -62,13 +61,7 @@ const PostInteraction = ({
           </span>
         </div>
         <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-xl">
-          <Image
-            src="/comment.png"
-            width={16}
-            height={16}
-            alt=""
-            className="cursor-pointer"
-          />
+          <MessageCircleMore size={18} />
           <span className="text-gray-300">|</span>
           <span className="text-gray-500">
             {commentNumber}<span className="hidden md:inline"> Comments</span>
@@ -77,13 +70,7 @@ const PostInteraction = ({
       </div>
       <div className="">
         <div className="flex items-center gap-4 bg-slate-50 p-2 rounded-xl">
-          <Image
-            src="/share.png"
-            width={16}
-            height={16}
-            alt=""
-            className="cursor-pointer"
-          />
+          <Send size={18}/>
           <span className="text-gray-300">|</span>
           <span className="text-gray-500">
             <span className="hidden md:inline"> Share</span>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Calendar1, Home, HomeIcon, Store, User, User2Icon } from "lucide-react";
+import { Bookmark, BookOpenText, Calendar1, Home, HomeIcon, ListCheck, Newspaper, Settings, Store, User, User2Icon } from "lucide-react";
 import ProfileCard from "./ProfileCard";
 import Ad from "../Ad";
 
@@ -45,23 +45,15 @@ const LeftMenu = ({ type }: { type: "home" | "profile" }) => {
           href="/"
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100"
         >
-          <Image src="/albums.png" alt="" width={20} height={20} />
-          <span>Albums</span>
+          <Bookmark/>
+          <span>Bookmarks</span>
         </Link>
         <hr className="border-t-1 border-gray-50 w-36 self-center" />
         <Link
           href="/"
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100"
         >
-          <Image src="/videos.png" alt="" width={20} height={20} />
-          <span>Videos</span>
-        </Link>
-        <hr className="border-t-1 border-gray-50 w-36 self-center" />
-        <Link
-          href="/"
-          className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100"
-        >
-          <Image src="/news.png" alt="" width={20} height={20} />
+          <Newspaper/>
           <span>News</span>
         </Link>
         <hr className="border-t-1 border-gray-50 w-36 self-center" />
@@ -69,7 +61,7 @@ const LeftMenu = ({ type }: { type: "home" | "profile" }) => {
           href="/"
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100"
         >
-          <Image src="/courses.png" alt="" width={20} height={20} />
+          <BookOpenText/>
           <span>Courses</span>
         </Link>
         <hr className="border-t-1 border-gray-50 w-36 self-center" />
@@ -77,7 +69,7 @@ const LeftMenu = ({ type }: { type: "home" | "profile" }) => {
           href="/"
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100"
         >
-          <Image src="/lists.png" alt="" width={20} height={20} />
+          <ListCheck/>
           <span>Lists</span>
         </Link>
         <hr className="border-t-1 border-gray-50 w-36 self-center" />
@@ -85,7 +77,7 @@ const LeftMenu = ({ type }: { type: "home" | "profile" }) => {
           href="/"
           className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100"
         >
-          <Image src="/settings.png" alt="" width={20} height={20} />
+          <Settings/>
           <span>Settings</span>
         </Link>
       </div>
