@@ -18,6 +18,7 @@ export const posts = pgTable('Post', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   desc: text('desc').notNull(),
   img: text('img'),
+  video: text('video'),
   createdAt: timestamp('createdAt', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updatedAt', { withTimezone: true }).defaultNow().notNull(),
   userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
