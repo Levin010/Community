@@ -3,7 +3,6 @@ import { CldVideoPlayer } from "next-cloudinary";
 import "next-cloudinary/dist/cld-video-player.css";
 
 export default function PostVideo({ id, src }: { id: string; src: string }) {
-    console.log("PostVideo src:", src);
   return (
     <div className="w-full">
       <CldVideoPlayer

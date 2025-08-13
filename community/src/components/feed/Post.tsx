@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Comments from "@/components/feed/Comments";
-// import { Post as PostType, User } from "@prisma/client";
+import { posts, users } from "@/db/schema";
 import PostInteraction from "@/components/feed/PostInteraction";
 import { Suspense } from "react";
 import PostInfo from "@/components/feed/PostInfo";
@@ -8,11 +8,17 @@ import { auth } from "@clerk/nextjs/server";
 import PostVideo from "./PostVideo";
 
 
-type FeedPostType = PostType & { user: User } & {
+type PostType = typeof posts.$inferSelect;
+type UserType = typeof users.$inferSelect;
+
+type FeedPostType = PostType & { 
+  user: UserType 
+} & {
   likes: [{ userId: string }];
 } & {
   _count: { comments: number };
 };
+
 
 const Post = async ({ post }: { post: FeedPostType }) => {
   const { userId } = await auth();
