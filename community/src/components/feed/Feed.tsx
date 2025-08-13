@@ -13,6 +13,7 @@ const Feed = async ({ username }: { username?: string }) => {
         id: posts.id,
         desc: posts.desc,
         img: posts.img,
+        video:posts.video,
         createdAt: posts.createdAt,
         userId: posts.userId,
         user: {
@@ -57,6 +58,7 @@ const Feed = async ({ username }: { username?: string }) => {
         id: posts.id,
         desc: posts.desc,
         img: posts.img,
+        video:posts.video,
         createdAt: posts.createdAt,
         userId: posts.userId,
         user: {

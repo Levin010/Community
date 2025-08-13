@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Comments from "@/components/feed/Comments";
-import { Post as PostType, User } from "@prisma/client";
+// import { Post as PostType, User } from "@prisma/client";
 import PostInteraction from "@/components/feed/PostInteraction";
 import { Suspense } from "react";
 import PostInfo from "@/components/feed/PostInfo";
 import { auth } from "@clerk/nextjs/server";
+import PostVideo from "./PostVideo";
+
 
 type FeedPostType = PostType & { user: User } & {
   likes: [{ userId: string }];
@@ -46,6 +48,15 @@ const Post = async ({ post }: { post: FeedPostType }) => {
               alt=""
             />
           </div>
+        )}
+        {post.video && (
+            <PostVideo
+                id={`video-${post.id}`}
+                src={post.video
+                .split("/upload/")[1]
+                .split("/").slice(1).join("/")
+                .replace(/\.[^/.]+$/, "")}
+            />
         )}
       </div>
       {/* INTERACTION */}
