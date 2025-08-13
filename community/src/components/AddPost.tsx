@@ -34,7 +34,7 @@ const AddPost = () => {
         {/* TEXT INPUT */}
         <form action={(formData)=>addPost(formData, img?.secure_url || "", video?.secure_url || "")} className="flex gap-4">
           <textarea
-            placeholder="Make a new post"
+            placeholder="Make a new post anonymously"
             className="flex-1 bg-slate-100 rounded-lg p-2"
             name="desc"
             onChange={(e) => setDesc(e.target.value)}

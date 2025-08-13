@@ -22,6 +22,7 @@ const Feed = async ({ username }: { username?: string }) => {
           avatar: users.avatar,
           name: users.name,
           surname: users.surname,
+          role: users.role,
         },
       })
       .from(posts)
@@ -67,6 +68,7 @@ const Feed = async ({ username }: { username?: string }) => {
           avatar: users.avatar,
           name: users.name,
           surname: users.surname,
+          role: users.role,
         },
       })
       .from(posts)

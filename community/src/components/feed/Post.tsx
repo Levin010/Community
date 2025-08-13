@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import PostInfo from "@/components/feed/PostInfo";
 import { auth } from "@clerk/nextjs/server";
 import PostVideo from "./PostVideo";
+import { BadgeCheck } from "lucide-react";
 
 
 type PostType = typeof posts.$inferSelect;
@@ -34,10 +35,17 @@ const Post = async ({ post }: { post: FeedPostType }) => {
             alt=""
             className="w-10 h-10 rounded-full"
           />
-          <span className="font-medium">
-            {post.user.name && post.user.surname
-              ? post.user.name + " " + post.user.surname
-              : post.user.username}
+          <span className="font-medium flex items-center gap-1">
+            
+            {post.user.role === 'patient' 
+                ? 'anonymous' 
+                : (post.user.name && post.user.surname
+                    ? post.user.name + " " + post.user.surname
+                    : post.user.username)
+            }
+            {post.user.role !== 'patient' && (
+            <BadgeCheck size={20} className="fill-violet-900 text-white" />
+            )}
           </span>
         </div>
         {userId === post.user.id && <PostInfo postId={post.id} />}
