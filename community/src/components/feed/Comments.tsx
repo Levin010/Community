@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import Image from "next/image";
 import CommentList from "./CommentList";
 
-const Comments = async ({postId}:{postId:number}) => {
+const Comments = async ({postId, postAuthorId}:{postId:number, postAuthorId: string}) => {
 
   const commentsData = await db
     .select({
@@ -19,6 +19,7 @@ const Comments = async ({postId}:{postId:number}) => {
         avatar: users.avatar,
         name: users.name,
         surname: users.surname,
+        role: users.role,
       },
     })
     .from(comments)
@@ -28,7 +29,7 @@ const Comments = async ({postId}:{postId:number}) => {
   return (
     <div className="">
       {/* WRITE */}
-      <CommentList comments={commentsData} postId={postId}/>
+      <CommentList comments={commentsData} postId={postId} postAuthorId={postAuthorId}/>
     </div>
   );
 };

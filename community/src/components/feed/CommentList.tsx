@@ -2,19 +2,29 @@
 
 import { addComment } from "@/lib/actions";
 import { useUser } from "@clerk/nextjs";
-import { Comment, User } from "@prisma/client";
+import { users, comments } from "@/db/schema";
 import Image from "next/image";
 import { useOptimistic, useState } from "react";
+import { BadgeCheck, Heart } from "lucide-react";
+
+
+type User = typeof users.$inferSelect;
+type Comment = typeof comments.$inferSelect;
+
 type CommentWithUser = Comment & { user: User };
 
 const CommentList = ({
   comments,
   postId,
+  postAuthorId,
 }: {
   comments: CommentWithUser[];
   postId: number;
+  postAuthorId: string;
 }) => {
   const { user } = useUser();
+  console.log("Current user:", user?.id);
+  console.log("Post author ID:", postAuthorId);
   const [commentState, setCommentState] = useState(comments);
   const [desc, setDesc] = useState("");
 
@@ -32,14 +42,12 @@ const CommentList = ({
         id: user.id,
         username: "Sending Please Wait...",
         avatar: user.imageUrl || "/noAvatar.png",
-        cover: "",
-        description: "",
-        name: "",
-        surname: "",
-        city: "",
-        work: "",
-        school: "",
-        website: "",
+        cover: null,
+        description: null,
+        name: null,
+        surname: null,
+        city: null,
+        role: (user.publicMetadata?.role as "patient" | "doctor") || "patient",
         createdAt: new Date(Date.now()),
       },
     });
@@ -80,7 +88,8 @@ const CommentList = ({
       <div className="">
         {/* COMMENT */}
         {optimisticComments.map((comment) => (
-          <div className="flex gap-4 justify-between mt-6" key={comment.id}>
+          <div className="flex gap-4 justify-between mt-6 ml-4" key={comment.id}>
+            
             {/* AVATAR */}
             <Image
               src={comment.user.avatar || "noAvatar.png"}
@@ -91,21 +100,27 @@ const CommentList = ({
             />
             {/* DESC */}
             <div className="flex flex-col gap-2 flex-1">
-              <span className="font-medium">
-                {comment.user.name && comment.user.surname
-                  ? comment.user.name + " " + comment.user.surname
-                  : comment.user.username}
+              <span className="font-medium flex items-center gap-1">
+                {comment.user.role === 'patient' 
+                    ? 'anonymous' 
+                    : (comment.user.name && comment.user.surname
+                        ? comment.user.name + " " + comment.user.surname
+                        : comment.user.username)
+                }
+                {comment.user.role !== 'patient' && (
+                    <BadgeCheck size={20} className="fill-violet-900 text-white" />
+                )}
+                {comment.user.role === 'doctor' && 
+                user?.id === postAuthorId && (
+                    <button className="ml-2 px-1 py-0.5 sm:px-2 sm:py-1 bg-violet-900 hover:bg-violet-700 text-white text-xs rounded transition-colors">
+                    Consult
+                    </button>
+                )}
               </span>
               <p>{comment.desc}</p>
               <div className="flex items-center gap-8 text-xs text-gray-500 mt-2">
                 <div className="flex items-center gap-4">
-                  <Image
-                    src="/like.png"
-                    alt=""
-                    width={12}
-                    height={12}
-                    className="cursor-pointer w-4 h-4"
-                  />
+                  <Heart size={18} className="w-4 h-4 cursor-pointer" />
                   <span className="text-gray-300">|</span>
                   <span className="text-gray-500">0 Likes</span>
                 </div>

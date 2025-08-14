@@ -4,7 +4,7 @@ import { switchLike } from "@/lib/actions";
 import { useAuth } from "@clerk/nextjs";
 import { Heart, MessageCircleMore, Send } from "lucide-react";
 import Image from "next/image";
-import { useOptimistic, useState } from "react";
+import { useOptimistic, useState, useEffect } from "react";
 
 const PostInteraction = ({
   postId,
@@ -18,8 +18,17 @@ const PostInteraction = ({
   const { isLoaded, userId } = useAuth();
   const [likeState, setLikeState] = useState({
     likeCount: likes.length,
-    isLiked: userId ? likes.includes(userId) : false,
+    isLiked: false,
   });
+
+  useEffect(() => {
+    if (isLoaded && userId) {
+        setLikeState(prev => ({
+        ...prev,
+        isLiked: likes.includes(userId)
+        }));
+    }
+    }, [isLoaded, userId, likes]);
 
   const [optimisticLike, switchOptimisticLike] = useOptimistic(
     likeState,
