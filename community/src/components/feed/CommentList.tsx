@@ -1,6 +1,6 @@
 "use client";
 
-import { addComment } from "@/lib/actions";
+import { addComment, initiateConsult } from "@/lib/actions";
 import { useUser } from "@clerk/nextjs";
 import { users, comments } from "@/db/schema";
 import Image from "next/image";
@@ -112,9 +112,11 @@ const CommentList = ({
                 )}
                 {comment.user.role === 'doctor' && 
                 user?.id === postAuthorId && (
-                    <button className="ml-2 px-1 py-0.5 sm:px-2 sm:py-1 bg-violet-900 hover:bg-violet-700 text-white text-xs rounded transition-colors">
-                    Consult
-                    </button>
+                    <form action={() => initiateConsult(comment.user.id, user.id)}>
+                        <button className="ml-2 px-1 py-0.5 sm:px-2 sm:py-1 bg-violet-900 hover:bg-violet-700 text-white text-xs rounded transition-colors">
+                        Consult
+                        </button>
+                    </form>
                 )}
               </span>
               <p>{comment.desc}</p>

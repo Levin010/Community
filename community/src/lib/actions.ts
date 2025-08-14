@@ -6,6 +6,8 @@ import { posts, likes, comments, users } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+
 
 
 export const updateProfile = async (
@@ -25,9 +27,6 @@ export const updateProfile = async (
     surname: z.string().max(60).optional(),
     description: z.string().max(255).optional(),
     city: z.string().max(60).optional(),
-    school: z.string().max(60).optional(),
-    work: z.string().max(60).optional(),
-    website: z.string().max(60).optional(),
   });
 
   const validatedFields = Profile.safeParse({ cover, ...filteredFields });
@@ -44,12 +43,10 @@ export const updateProfile = async (
   }
 
   try {
-    await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: validatedFields.data,
-    });
+    await db.update(users)
+      .set(validatedFields.data)
+      .where(eq(users.id, userId));
+    
     return { success: true, error: false };
   } catch (err) {
     console.log(err);
@@ -169,4 +166,38 @@ export const deletePost = async (postId: number) => {
   } catch (err) {
     console.log(err);
   }
+};
+
+// export const initiateConsult = async (doctorId: string, patientId: string) => {
+//   const doctorData = await db
+//     .select({
+//       username: users.username,
+//       name: users.name,
+//       surname: users.surname,
+//     })
+//     .from(users)
+//     .where(eq(users.id, doctorId))
+//     .limit(1);
+
+//   const patientData = await db
+//     .select({
+//       username: users.username,
+//       name: users.name,
+//       surname: users.surname,
+//     })
+//     .from(users)
+//     .where(eq(users.id, patientId))
+//     .limit(1);
+
+//   const doctorName = doctorData[0]?.name && doctorData[0]?.surname 
+//     ? `${doctorData[0].name} ${doctorData[0].surname}`
+//     : doctorData[0]?.username || 'Unknown Doctor';
+
+//   const patientName = patientData[0]?.username || 'Anonymous Patient';
+
+//   redirect(`/chats?doctorName=${encodeURIComponent(doctorName)}&patientName=${encodeURIComponent(patientName)}&doctorId=${doctorId}&patientId=${patientId}`);
+// };
+
+export const initiateConsult = async (doctorId: string, patientId: string) => {
+  redirect(`/chats?doctorId=${doctorId}&patientId=${patientId}`);
 };

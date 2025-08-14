@@ -21,29 +21,7 @@ const Navbar = () => {
       {/* CENTER */}
       <div className="hidden md:flex w-[50%] text-sm items-center justify-between">
         {/* LINKS */}
-        <div className="flex gap-6 text-gray-600">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/home.png"
-              alt="Homepage"
-              width={16}
-              height={16}
-              className="w-4 h-4"
-            />
-            <span>Homepage</span>
-          </Link>
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/friends.png"
-              alt="Friends"
-              width={16}
-              height={16}
-              className="w-4 h-4"
-            />
-            <span>Friends</span>
-          </Link>
-        </div>
-        <div className='hidden xl:flex p-2 bg-slate-100 items-center rounded-xl'>
+        <div className='hidden xl:flex p-2 bg-slate-100 items-center rounded-xl ml-12'>
           <input type="text" placeholder="search..." className="bg-transparent outline-none"/>
           <Image src="/search.png" alt="" width={14} height={14}/>
         </div>
