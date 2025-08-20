@@ -2,7 +2,7 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { db } from "@/db";
-import { posts, likes, comments, users } from "@/db/schema";
+import { posts, likes, comments, users, chats } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
@@ -199,5 +199,13 @@ export const deletePost = async (postId: number) => {
 // };
 
 export const initiateConsult = async (doctorId: string, patientId: string) => {
-  redirect(`/chats?doctorId=${doctorId}&patientId=${patientId}`);
+  const chatId = `${patientId}-${doctorId}`;
+  
+  await db.insert(chats).values({
+    id: chatId,
+    doctorId,
+    patientId,
+  }).onConflictDoNothing();
+  
+  redirect(`/chats/${chatId}`);
 };

@@ -41,6 +41,21 @@ export const likes = pgTable('Like', {
   commentId: integer('commentId').references(() => comments.id, { onDelete: 'cascade' }),
 })
 
+export const chats = pgTable('Chat', {
+  id: text('id').primaryKey(),
+  doctorId: text('doctorId').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  patientId: text('patientId').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('createdAt', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export const messages = pgTable('Message', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  content: text('content').notNull(),
+  senderId: text('senderId').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  chatId: text('chatId').notNull().references(() => chats.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('createdAt', { withTimezone: true }).defaultNow().notNull(),
+})
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(posts),
