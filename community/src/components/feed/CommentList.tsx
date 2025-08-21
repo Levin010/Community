@@ -23,8 +23,6 @@ const CommentList = ({
   postAuthorId: string;
 }) => {
   const { user } = useUser();
-  console.log("Current user:", user?.id);
-  console.log("Post author ID:", postAuthorId);
   const [commentState, setCommentState] = useState(comments);
   const [desc, setDesc] = useState("");
 

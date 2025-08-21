@@ -1,41 +1,33 @@
-import Chats from "@/components/chats/Chats";
+import { auth } from "@clerk/nextjs/server";
+import { db } from "@/db";
+import { chats, users } from "@/db/schema";
+import { eq, or } from "drizzle-orm";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 import LeftMenu from "@/components/leftMenu/LeftMenu";
 import RightMenu from "@/components/rightMenu/RightMenu";
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
-const Homepage = async ({ searchParams }: { searchParams: Promise<{ doctorId?: string; patientId?: string }> }) => {
-  const { doctorId, patientId } = await searchParams;
+const ChatsPage = async () => {
+  const { userId } = await auth();
+  if (!userId) redirect("/sign-in");
 
-  let doctorName = "Unknown Doctor";
-  let patientName = "Anonymous Patient";
+  const userChats = await db
+    .select({
+      id: chats.id,
+      doctorId: chats.doctorId,
+      patientId: chats.patientId,
+      createdAt: chats.createdAt,
+      doctorName: sql<string>`doctor.name`.as('doctorName'),
+      doctorSurname: sql<string>`doctor.surname`.as('doctorSurname'),
+      doctorUsername: sql<string>`doctor.username`.as('doctorUsername'),
+      patientUsername: sql<string>`patient.username`.as('patientUsername'),
+    })
+    .from(chats)
+    .leftJoin(sql`${users} as doctor`, sql`doctor.id = ${chats.doctorId}`)
+    .leftJoin(sql`${users} as patient`, sql`patient.id = ${chats.patientId}`)
+    .where(or(eq(chats.doctorId, userId), eq(chats.patientId, userId)));
 
-  if (doctorId && patientId) {
-    const [doctorData] = await db
-      .select({
-        username: users.username,
-        name: users.name,
-        surname: users.surname,
-      })
-      .from(users)
-      .where(eq(users.id, doctorId))
-      .limit(1);
-
-    const [patientData] = await db
-      .select({
-        username: users.username,
-      })
-      .from(users)
-      .where(eq(users.id, patientId))
-      .limit(1);
-
-    doctorName = doctorData?.name && doctorData?.surname 
-      ? `${doctorData.name} ${doctorData.surname}`
-      : doctorData?.username || 'Unknown Doctor';
-
-    patientName = patientData?.username || 'Anonymous Patient';
-  }
 
   return (
     <div className="flex gap-6 pt-6">
@@ -44,7 +36,30 @@ const Homepage = async ({ searchParams }: { searchParams: Promise<{ doctorId?: s
       </div>
       <div className="w-full lg:w-[70%] xl:w-[50%]">
         <div className="flex flex-col gap-6">
-          <Chats doctorName={doctorName} patientName={patientName} />
+          <h1 className="text-2xl font-bold">Your Chats</h1>
+          <div className="space-y-4">
+            {userChats.map((chat) => {
+                const isDoctor = chat.doctorId === userId;
+                const otherUserName = isDoctor 
+                    ? chat.patientUsername || "Anonymous Patient"
+                    : (chat.doctorName && chat.doctorSurname 
+                        ? `${chat.doctorName} ${chat.doctorSurname}` 
+                        : chat.doctorUsername || "Doctor");
+
+                return (
+                    <Link
+                    key={chat.id}
+                    href={`/chats/${chat.id}`}
+                    className="block p-4 border rounded-lg hover:bg-gray-50"
+                    >
+                    <div className="font-medium">Chat with {otherUserName}</div>
+                    <div className="text-sm text-gray-500">
+                        Started {chat.createdAt.toLocaleDateString()}
+                    </div>
+                    </Link>
+                );
+            })}
+          </div>
         </div>
       </div>
       <div className="hidden lg:block w-[30%]">
@@ -54,4 +69,4 @@ const Homepage = async ({ searchParams }: { searchParams: Promise<{ doctorId?: s
   );
 };
 
-export default Homepage;
+export default ChatsPage;

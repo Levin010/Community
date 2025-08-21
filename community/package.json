@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "NODE_ENV=production node server.js",
     "lint": "next lint"
-  },
+    },
   "dependencies": {
     "@clerk/nextjs": "^6.27.1",
     "@geist-ui/react": "^2.2.5",

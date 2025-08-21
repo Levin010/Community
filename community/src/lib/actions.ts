@@ -168,44 +168,17 @@ export const deletePost = async (postId: number) => {
   }
 };
 
-// export const initiateConsult = async (doctorId: string, patientId: string) => {
-//   const doctorData = await db
-//     .select({
-//       username: users.username,
-//       name: users.name,
-//       surname: users.surname,
-//     })
-//     .from(users)
-//     .where(eq(users.id, doctorId))
-//     .limit(1);
-
-//   const patientData = await db
-//     .select({
-//       username: users.username,
-//       name: users.name,
-//       surname: users.surname,
-//     })
-//     .from(users)
-//     .where(eq(users.id, patientId))
-//     .limit(1);
-
-//   const doctorName = doctorData[0]?.name && doctorData[0]?.surname 
-//     ? `${doctorData[0].name} ${doctorData[0].surname}`
-//     : doctorData[0]?.username || 'Unknown Doctor';
-
-//   const patientName = patientData[0]?.username || 'Anonymous Patient';
-
-//   redirect(`/chats?doctorName=${encodeURIComponent(doctorName)}&patientName=${encodeURIComponent(patientName)}&doctorId=${doctorId}&patientId=${patientId}`);
-// };
-
 export const initiateConsult = async (doctorId: string, patientId: string) => {
   const chatId = `${patientId}-${doctorId}`;
+  console.log("Creating chat:", { chatId, doctorId, patientId });
   
-  await db.insert(chats).values({
+  const result = await db.insert(chats).values({
     id: chatId,
     doctorId,
     patientId,
-  }).onConflictDoNothing();
+  }).onConflictDoNothing().returning();
+  
+  console.log("Chat insert result:", result);
   
   redirect(`/chats/${chatId}`);
 };
