@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Bookmark, BookOpenText, Calendar1, Home, HomeIcon, ListCheck, Newspaper, Settings, Store, User, User2Icon } from "lucide-react";
+import { Bookmark, BookOpenText, Calendar1, Home, HomeIcon, ListCheck, MessageCircleMore, Newspaper, Settings, Store, User, User2Icon } from "lucide-react";
 import ProfileCard from "./ProfileCard";
 import Ad from "../Ad";
 
@@ -15,6 +15,14 @@ const LeftMenu = ({ type }: { type: "home" | "profile" }) => {
         >
           <HomeIcon/>
           <span>Home</span>
+        </Link>
+        <hr className="border-t-1 border-gray-50 w-36 self-center" />
+        <Link
+          href="/chats"
+          className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-100"
+        >
+          <MessageCircleMore/>
+          <span>My Chats</span>
         </Link>
         <hr className="border-t-1 border-gray-50 w-36 self-center" />
         <Link

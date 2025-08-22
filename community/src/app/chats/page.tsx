@@ -30,13 +30,13 @@ const ChatsPage = async () => {
 
 
   return (
-    <div className="flex gap-6 pt-6">
-      <div className="hidden xl:block w-[20%]">
+    <div className="flex gap-6 pt-6 h-[calc(100vh-96px)] overflow-hidden">
+      <div className="hidden xl:block w-[20%] overflow-y-auto">
         <LeftMenu type="home" />
       </div>
-      <div className="w-full lg:w-[70%] xl:w-[50%]">
+      <div className="w-full lg:w-[70%] xl:w-[50%] overflow-y-auto">
         <div className="flex flex-col gap-6">
-          <h1 className="text-2xl font-bold">Your Chats</h1>
+          <h1 className="text-2xl font-bold">My Chats</h1>
           <div className="space-y-4">
             {userChats.map((chat) => {
                 const isDoctor = chat.doctorId === userId;
@@ -62,7 +62,7 @@ const ChatsPage = async () => {
           </div>
         </div>
       </div>
-      <div className="hidden lg:block w-[30%]">
+      <div className="hidden lg:block w-[30%] overflow-y-auto">
         <RightMenu />
       </div>
     </div>

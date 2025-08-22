@@ -170,15 +170,12 @@ export const deletePost = async (postId: number) => {
 
 export const initiateConsult = async (doctorId: string, patientId: string) => {
   const chatId = `${patientId}-${doctorId}`;
-  console.log("Creating chat:", { chatId, doctorId, patientId });
   
   const result = await db.insert(chats).values({
     id: chatId,
     doctorId,
     patientId,
   }).onConflictDoNothing().returning();
-  
-  console.log("Chat insert result:", result);
-  
+    
   redirect(`/chats/${chatId}`);
 };

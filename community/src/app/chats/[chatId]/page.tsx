@@ -4,6 +4,9 @@ import { chats, users, messages } from "@/db/schema";
 import { eq, and, or } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import ChatRoom from "@/components/chats/ChatRoom";
+import LeftMenu from "@/components/leftMenu/LeftMenu";
+import RightMenu from "@/components/rightMenu/RightMenu";
+import { sql } from "drizzle-orm";
 
 const ChatPage = async ({ params }: { params: Promise<{ chatId: string[] }> }) => {
   const { userId } = await auth();
@@ -13,20 +16,22 @@ const ChatPage = async ({ params }: { params: Promise<{ chatId: string[] }> }) =
 
   const [chatData] = await db
     .select({
-      id: chats.id,
-      doctorId: chats.doctorId,
-      patientId: chats.patientId,
-      doctorName: users.name,
-      doctorSurname: users.surname,
-      patientUsername: users.username,
+        id: chats.id,
+        doctorId: chats.doctorId,
+        patientId: chats.patientId,
+        doctorName: sql<string>`doctor.name`.as('doctorName'),
+        doctorSurname: sql<string>`doctor.surname`.as('doctorSurname'),
+        doctorUsername: sql<string>`doctor.username`.as('doctorUsername'),
+        patientUsername: sql<string>`patient.username`.as('patientUsername'),
     })
     .from(chats)
-    .leftJoin(users, eq(users.id, chats.doctorId))
+    .leftJoin(sql`${users} as doctor`, sql`doctor.id = ${chats.doctorId}`)
+    .leftJoin(sql`${users} as patient`, sql`patient.id = ${chats.patientId}`)
     .where(
-      and(
+        and(
         eq(chats.id, chatId),
         or(eq(chats.doctorId, userId), eq(chats.patientId, userId))
-      )
+        )
     );
 
   if (!chatData) redirect("/chats");
@@ -45,16 +50,28 @@ const ChatPage = async ({ params }: { params: Promise<{ chatId: string[] }> }) =
     .orderBy(messages.createdAt);
 
   return (
-    <ChatRoom
-      chatId={chatId}
-      currentUserId={userId}
-      messages={chatMessages}
-      otherUserName={
-        chatData.doctorId === userId
-          ? chatData.patientUsername || "Anonymous"
-          : `${chatData.doctorName} ${chatData.doctorSurname}` || "Doctor"
-      }
-    />
+    <div className="flex gap-6 pt-6 h-[calc(100vh-96px)] overflow-hidden">
+        <div className="hidden xl:block w-[20%] overflow-y-auto">
+            <LeftMenu type="home" />
+        </div>
+        <div className="w-full lg:w-[70%] xl:w-[50%] flex flex-col">
+            <ChatRoom
+            chatId={chatId}
+            currentUserId={userId}
+            messages={chatMessages}
+            otherUserName={
+            chatData.doctorId === userId
+                ? chatData.patientUsername || "Anonymous"
+                : (chatData.doctorName && chatData.doctorSurname 
+                    ? `${chatData.doctorName} ${chatData.doctorSurname}` 
+                    : chatData.doctorUsername || "Doctor")
+            }
+            />
+        </div>
+        <div className="hidden lg:block w-[30%] overflow-y-auto">
+            <RightMenu />
+        </div>
+    </div>
   );
 };
 
