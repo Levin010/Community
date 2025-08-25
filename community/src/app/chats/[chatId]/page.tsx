@@ -50,7 +50,7 @@ const ChatPage = async ({ params }: { params: Promise<{ chatId: string[] }> }) =
     .orderBy(messages.createdAt);
 
   return (
-    <div className="flex gap-6 pt-6 h-[calc(100vh-96px)] overflow-hidden">
+    <div className="flex gap-6 pt-1 h-[calc(100vh-96px)] overflow-hidden">
         <div className="hidden xl:block w-[20%] overflow-y-auto">
             <LeftMenu type="home" />
         </div>

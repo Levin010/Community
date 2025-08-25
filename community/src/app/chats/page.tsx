@@ -21,7 +21,9 @@ const ChatsPage = async () => {
       doctorName: sql<string>`doctor.name`.as('doctorName'),
       doctorSurname: sql<string>`doctor.surname`.as('doctorSurname'),
       doctorUsername: sql<string>`doctor.username`.as('doctorUsername'),
+      doctorAvatar: sql<string>`doctor.avatar`.as('doctorAvatar'),
       patientUsername: sql<string>`patient.username`.as('patientUsername'),
+      patientAvatar: sql<string>`patient.avatar`.as('patientAvatar'),
     })
     .from(chats)
     .leftJoin(sql`${users} as doctor`, sql`doctor.id = ${chats.doctorId}`)
@@ -30,7 +32,7 @@ const ChatsPage = async () => {
 
 
   return (
-    <div className="flex gap-6 pt-6 h-[calc(100vh-96px)] overflow-hidden">
+    <div className="flex gap-6 pt-1 h-[calc(100vh-96px)] overflow-hidden">
       <div className="hidden xl:block w-[20%] overflow-y-auto">
         <LeftMenu type="home" />
       </div>
@@ -45,6 +47,7 @@ const ChatsPage = async () => {
                     : (chat.doctorName && chat.doctorSurname 
                         ? `${chat.doctorName} ${chat.doctorSurname}` 
                         : chat.doctorUsername || "Doctor");
+                const otherUserAvatar = isDoctor ? chat.patientAvatar : chat.doctorAvatar;
 
                 return (
                     <Link
@@ -52,10 +55,19 @@ const ChatsPage = async () => {
                     href={`/chats/${chat.id}`}
                     className="block p-4 border rounded-lg hover:bg-gray-50"
                     >
-                    <div className="font-medium">Chat with {otherUserName}</div>
-                    <div className="text-sm text-gray-500">
-                        Started {chat.createdAt.toLocaleDateString()}
-                    </div>
+                    <div className="flex items-center gap-3">
+                        <img 
+                            src={otherUserAvatar || "/noAvatar.png"} 
+                            alt="" 
+                            className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div>
+                            <div className="font-medium">{otherUserName}</div>
+                            <div className="text-sm text-gray-500">
+                            Started {chat.createdAt.toLocaleDateString()}
+                            </div>
+                        </div>
+                        </div>
                     </Link>
                 );
             })}
