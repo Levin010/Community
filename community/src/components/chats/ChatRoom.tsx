@@ -1,5 +1,5 @@
 "use client";
-import { ChevronLeft } from "lucide-react";
+import { BadgeCheck, ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
@@ -17,9 +17,11 @@ interface ChatRoomProps {
   currentUserId: string;
   messages: Message[];
   otherUserName: string;
+  otherUserAvatar: string | null;
+  isOtherUserDoctor: boolean;
 }
 
-const ChatRoom = ({ chatId, currentUserId, messages: initialMessages, otherUserName }: ChatRoomProps) => {
+const ChatRoom = ({ chatId, currentUserId, messages: initialMessages, otherUserName, otherUserAvatar, isOtherUserDoctor }: ChatRoomProps) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [newMessage, setNewMessage] = useState("");
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -62,11 +64,21 @@ const ChatRoom = ({ chatId, currentUserId, messages: initialMessages, otherUserN
   return (
     <div className="flex flex-col h-full border rounded-lg">
       <div className="p-3 border-b border-t bg-gray-50 flex-shrink-0">
-        <div className="flex -ml-1">
+        <div className="flex -ml-1 gap-2 items-center">
             <Link href="/chats">
             <ChevronLeft />
             </Link>
-            <h2 className="font-semibold">Chat with {otherUserName}</h2>
+            <img 
+            src={otherUserAvatar || "/noAvatar.png"} 
+            alt="" 
+            className="w-8 h-8 rounded-full object-cover" 
+            />
+            <div className="flex items-center gap-0.5" >
+                <h2 className="font-semibold">{otherUserName}</h2>
+                {isOtherUserDoctor && (
+                    <BadgeCheck size={20} className="fill-violet-900 text-white" />
+                )}
+            </div>
         </div>
       </div>
       

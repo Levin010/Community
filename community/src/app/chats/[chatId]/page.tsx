@@ -23,6 +23,8 @@ const ChatPage = async ({ params }: { params: Promise<{ chatId: string[] }> }) =
         doctorSurname: sql<string>`doctor.surname`.as('doctorSurname'),
         doctorUsername: sql<string>`doctor.username`.as('doctorUsername'),
         patientUsername: sql<string>`patient.username`.as('patientUsername'),
+        doctorAvatar: sql<string>`doctor.avatar`.as('doctorAvatar'),
+        patientAvatar: sql<string>`patient.avatar`.as('patientAvatar'),
     })
     .from(chats)
     .leftJoin(sql`${users} as doctor`, sql`doctor.id = ${chats.doctorId}`)
@@ -66,6 +68,12 @@ const ChatPage = async ({ params }: { params: Promise<{ chatId: string[] }> }) =
                     ? `${chatData.doctorName} ${chatData.doctorSurname}` 
                     : chatData.doctorUsername || "Doctor")
             }
+            otherUserAvatar={
+                chatData.doctorId === userId 
+                    ? chatData.patientAvatar 
+                    : chatData.doctorAvatar
+            }
+            isOtherUserDoctor={chatData.doctorId !== userId}
             />
         </div>
         <div className="hidden lg:block w-[30%] overflow-y-auto">
