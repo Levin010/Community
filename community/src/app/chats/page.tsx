@@ -7,6 +7,7 @@ import Link from "next/link";
 import LeftMenu from "@/components/leftMenu/LeftMenu";
 import RightMenu from "@/components/rightMenu/RightMenu";
 import { sql } from "drizzle-orm";
+import { BadgeCheck } from "lucide-react";
 
 const ChatsPage = async () => {
   const { userId } = await auth();
@@ -48,12 +49,13 @@ const ChatsPage = async () => {
                         ? `${chat.doctorName} ${chat.doctorSurname}` 
                         : chat.doctorUsername || "Doctor");
                 const otherUserAvatar = isDoctor ? chat.patientAvatar : chat.doctorAvatar;
+                const isOtherUserDoctor = !isDoctor;
 
                 return (
                     <Link
                     key={chat.id}
                     href={`/chats/${chat.id}`}
-                    className="block p-4 border rounded-lg hover:bg-gray-50"
+                    className="block p-4 rounded-lg hover:bg-gray-200"
                     >
                     <div className="flex items-center gap-3">
                         <img 
@@ -62,7 +64,12 @@ const ChatsPage = async () => {
                             className="w-10 h-10 rounded-full object-cover"
                         />
                         <div>
-                            <div className="font-medium">{otherUserName}</div>
+                            <div className="flex items-center gap-0.5">
+                                <div className="font-medium">{otherUserName}</div>
+                                {isOtherUserDoctor && (
+                                    <BadgeCheck size={20} className="fill-violet-900 text-white" />
+                                )}
+                            </div>
                             <div className="text-sm text-gray-500">
                             Started {chat.createdAt.toLocaleDateString()}
                             </div>
